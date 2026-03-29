@@ -1,0 +1,193 @@
+<Window x:Class="ExamTest.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="Event Management System"
+        Height="860"
+        Width="1480"
+        MinHeight="760"
+        MinWidth="1240"
+        WindowStartupLocation="CenterScreen">
+    <Grid Background="#FFF5F7FA" Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0"
+                Padding="18"
+                Margin="0,0,0,14"
+                Background="White"
+                BorderBrush="#FFD8E1EB"
+                BorderThickness="1"
+                CornerRadius="10">
+            <DockPanel LastChildFill="False">
+                <StackPanel DockPanel.Dock="Left">
+                    <TextBlock FontSize="24" FontWeight="SemiBold" Text="Event Management with MySQL" />
+                    <TextBlock Margin="0,4,0,0"
+                               Foreground="#FF52606D"
+                               Text="Lists and filters stay here; create and update actions open in separate forms." />
+                    <TextBlock Margin="0,6,0,0"
+                               Foreground="#FF52606D"
+                               Text="Default connection: root / empty password / database event_management_demo / port 3306" />
+                </StackPanel>
+
+                <Button x:Name="RefreshAllButton"
+                        DockPanel.Dock="Right"
+                        Width="130"
+                        Height="34"
+                        Margin="12,0,0,0"
+                        Click="RefreshAllButton_Click"
+                        Content="Refresh All" />
+            </DockPanel>
+        </Border>
+
+        <Border Grid.Row="1"
+                Padding="12"
+                Margin="0,0,0,14"
+                Background="#FFFDFDFD"
+                BorderBrush="#FFD8E1EB"
+                BorderThickness="1"
+                CornerRadius="10">
+            <TextBlock x:Name="StatusTextBlock"
+                       FontSize="14"
+                       FontWeight="Medium"
+                       Text="Status: connecting..." />
+        </Border>
+
+        <TabControl Grid.Row="2">
+            <TabItem Header="Events">
+                <Border Margin="10"
+                        Padding="12"
+                        Background="White"
+                        BorderBrush="#FFD8E1EB"
+                        BorderThickness="1"
+                        CornerRadius="10">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <WrapPanel Grid.Row="0" Margin="0,0,0,10">
+                            <Button Width="120" Margin="0,0,8,8" Click="AddEventButton_Click" Content="Add Event" />
+                            <Button Width="120" Margin="0,0,18,8" Click="UpdateEventButton_Click" Content="Update Event" />
+                            <Button Width="120" Margin="0,0,18,8" Click="DeleteEventButton_Click" Content="Delete Event" />
+                            <TextBlock Margin="0,8,8,0" Text="Type filter" />
+                            <ComboBox x:Name="EventTypeFilterComboBox" Width="180" Margin="0,0,12,8" />
+                            <TextBlock Margin="0,8,8,0" Text="Location filter" />
+                            <TextBox x:Name="EventLocationFilterTextBox" Width="220" Margin="0,0,12,8" />
+                            <Button Width="110" Margin="0,0,8,8" Click="ApplyEventFilterButton_Click" Content="Apply Filters" />
+                            <Button Width="110" Margin="0,0,8,8" Click="ResetEventFilterButton_Click" Content="Reset" />
+                        </WrapPanel>
+
+                        <DataGrid Grid.Row="1"
+                                  x:Name="EventsDataGrid"
+                                  AutoGenerateColumns="False"
+                                  CanUserAddRows="False"
+                                  IsReadOnly="True"
+                                  SelectionMode="Single">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Width="60" Binding="{Binding Id}" Header="ID" />
+                                <DataGridTextColumn Width="*" Binding="{Binding Title}" Header="Title" />
+                                <DataGridTextColumn Width="140" Binding="{Binding EventType}" Header="Type" />
+                                <DataGridTextColumn Width="160" Binding="{Binding Location}" Header="Location" />
+                                <DataGridTextColumn Width="160" Binding="{Binding EventDate, StringFormat=dd.MM.yyyy HH:mm}" Header="Date" />
+                                <DataGridTextColumn Width="90" Binding="{Binding Capacity}" Header="Capacity" />
+                                <DataGridTextColumn Width="120" Binding="{Binding AvailableSeats}" Header="Available" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </Border>
+            </TabItem>
+
+            <TabItem Header="Participants">
+                <Border Margin="10"
+                        Padding="12"
+                        Background="White"
+                        BorderBrush="#FFD8E1EB"
+                        BorderThickness="1"
+                        CornerRadius="10">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <WrapPanel Grid.Row="0" Margin="0,0,0,10">
+                            <Button Width="140" Margin="0,0,8,8" Click="AddParticipantButton_Click" Content="Add Participant" />
+                            <Button Width="140" Margin="0,0,18,8" Click="UpdateParticipantButton_Click" Content="Update Participant" />
+                            <Button Width="140" Margin="0,0,18,8" Click="DeleteParticipantButton_Click" Content="Delete Participant" />
+                            <TextBlock Margin="0,8,8,0" Text="Search by name/email" />
+                            <TextBox x:Name="ParticipantSearchTextBox" Width="260" Margin="0,0,12,8" />
+                            <Button Width="90" Margin="0,0,8,8" Click="SearchParticipantsButton_Click" Content="Search" />
+                            <Button Width="90" Margin="0,0,8,8" Click="ResetParticipantsButton_Click" Content="Reset" />
+                        </WrapPanel>
+
+                        <DataGrid Grid.Row="1"
+                                  x:Name="ParticipantsDataGrid"
+                                  AutoGenerateColumns="False"
+                                  CanUserAddRows="False"
+                                  IsReadOnly="True"
+                                  SelectionMode="Single">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Width="60" Binding="{Binding Id}" Header="ID" />
+                                <DataGridTextColumn Width="*" Binding="{Binding FullName}" Header="Full Name" />
+                                <DataGridTextColumn Width="240" Binding="{Binding Email}" Header="Email" />
+                                <DataGridTextColumn Width="140" Binding="{Binding Phone}" Header="Phone" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </Border>
+            </TabItem>
+
+            <TabItem Header="Registrations">
+                <Border Margin="10"
+                        Padding="12"
+                        Background="White"
+                        BorderBrush="#FFD8E1EB"
+                        BorderThickness="1"
+                        CornerRadius="10">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <WrapPanel Grid.Row="0" Margin="0,0,0,10">
+                            <Button Width="150" Margin="0,0,8,8" Click="CreateRegistrationButton_Click" Content="Create Registration" />
+                            <Button Width="140" Margin="0,0,18,8" Click="UpdateRegistrationStatusButton_Click" Content="Set Status" />
+                            <TextBlock Margin="0,8,8,0" Text="Search by participant" />
+                            <TextBox x:Name="RegistrationSearchTextBox" Width="220" Margin="0,0,12,8" />
+                            <TextBlock Margin="0,8,8,0" Text="Status filter" />
+                            <ComboBox x:Name="RegistrationFilterStatusComboBox" Width="160" Margin="0,0,12,8" />
+                            <Button Width="90" Margin="0,0,8,8" Click="SearchRegistrationsButton_Click" Content="Filter" />
+                            <Button Width="90" Margin="0,0,8,8" Click="ResetRegistrationsButton_Click" Content="Reset" />
+                        </WrapPanel>
+
+                        <DataGrid Grid.Row="1"
+                                  x:Name="RegistrationsDataGrid"
+                                  AutoGenerateColumns="False"
+                                  CanUserAddRows="False"
+                                  IsReadOnly="True"
+                                  SelectionMode="Single">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Width="60" Binding="{Binding Id}" Header="ID" />
+                                <DataGridTextColumn Width="*" Binding="{Binding EventTitle}" Header="Event" />
+                                <DataGridTextColumn Width="130" Binding="{Binding EventType}" Header="Type" />
+                                <DataGridTextColumn Width="150" Binding="{Binding Location}" Header="Location" />
+                                <DataGridTextColumn Width="190" Binding="{Binding ParticipantName}" Header="Participant" />
+                                <DataGridTextColumn Width="220" Binding="{Binding ParticipantEmail}" Header="Email" />
+                                <DataGridTextColumn Width="110" Binding="{Binding Status}" Header="Status" />
+                                <DataGridTextColumn Width="160" Binding="{Binding RegisteredAt, StringFormat=dd.MM.yyyy HH:mm}" Header="Registered At" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </Border>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>
